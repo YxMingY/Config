@@ -15,7 +15,7 @@ class Config{
    
    protected $file;
    
-   public function __construct($file,$type,$data = null){
+   public function __construct($file,$type = self::JSON,$data = null){
       $this->type = $type;
       if(!file_exists($file)){
          switch($type){
@@ -23,7 +23,7 @@ class Config{
                file_put_contents($file,$data ?? "");
             break;
             case 1:
-               file_put_contents($file,json_encode(data ?? []));
+               file_put_contents($file,json_encode($data ?? []));
             break;
          }
       }
@@ -56,12 +56,14 @@ class Config{
        $this->setAll($data);
     }
    
-   public function remove($key){
-      if($this->type == 0) return;
-      $data = $this->getAll();
-      if(isset($data[$key]))
-         unset($data[$key]);
-      $this->setAll($data);
+   public function remove($key)
+   {
+     if ($this->type == 0) return;
+     $data = $this->getAll();
+     if (isset($data[$key]))
+       unset($data[$key]);
+     $this->setAll($data);
+   }
     
     public function append($value){
        if($this->type == 0) return;
@@ -79,8 +81,9 @@ class Config{
           return $d;
        }
        foreach($data as $d){
-          return $d
+          return $d;
        }
+       return null;
     }
     
     public function pop(bool $del = true){
@@ -96,7 +99,7 @@ class Config{
     
     public function getLength(){
        if($this->type == 0) return 0;
-       return count($this->getAllData());
+       return count($this->getAll());
     }
   }
 }
