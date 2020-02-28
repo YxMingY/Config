@@ -15,15 +15,15 @@ class Config{
    
    protected $file;
    
-   public function __construct($file,$type,$data){
+   public function __construct($file,$type,$data = null){
       $this->type = $type;
       if(!file_exists($file)){
          switch($type){
             case 0:
-               file_put_contents($file,$data);
+               file_put_contents($file,$data ?? "");
             break;
             case 1:
-               file_put_contents($file,json_encode(data));
+               file_put_contents($file,json_encode(data ?? []));
             break;
          }
       }
@@ -36,7 +36,7 @@ class Config{
     }
     
     public function get($key){
-       $data = $this->getAllData();
+       $data = $this->getAll();
        if($this->type == 0) return false;
        return isset($data[$key]) ? $data[$key] : false;
     }
@@ -49,22 +49,49 @@ class Config{
        }
     }
     
-    public function (int $key,$value,$mode = true){
+    public function set($key,$value){
        if($this->type == 0) return;
-       $data = $this->getAllData();
-       if($mode){
-          $data[$key] = $value;
-       } elseif (isset($data[$key])) {
-          unset($data[$key]);
+       $data = $this->getAll();
+       $data[$key] = $value;
+       $this->setAll($data);
+    }
+   
+   public function remove($key){
+      if($this->type == 0) return;
+      $data = $this->getAll();
+      if(isset($data[$key]))
+         unset($data[$key]);
+      $this->setAll($data);
+    
+    public function append($value){
+       if($this->type == 0) return;
+       $data = $this->getAll();
+       $data[] = $value;
+       $this->setAll($data);
+    }
+      
+    public function shift(bool $del = true){
+       if($this->type == 0) return false;
+       $data = $this->getAll();
+       if($del){
+          $d = array_shift($data);
+          $this->setAll($data);
+          return $d;
        }
-       $this->setAllData($data);
+       foreach($data as $d){
+          return $d
+       }
     }
     
-    public function appendData($value){
-       if($this->type == 0) return;
-       $data = $this->getAllData();
-          $data[] = $value;
-       $this->setAllData($data);
+    public function pop(bool $del = true){
+       if($this->type == 0) return false;
+       $data = $this->getAll();
+       if($del){
+          $d = array_pop($data);
+          $this->setAll($data);
+          return $d;
+       }
+       return end($data);
     }
     
     public function getLength(){
