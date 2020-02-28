@@ -30,12 +30,20 @@ namespace ymind\xming{
       $this->file = $file;
     }
 
-    public function getAll():mixed{
+    /**
+     * @return mixed
+     */
+    public function getAll()
+    {
       $str = trim(file_get_contents($this->file));
       return $this->type == 0 ? $str : json_decode($str,true);
     }
 
-    public function get($key):?mixed{
+    /**
+     * @param $key
+     * @return mixed|null
+     */
+    public function get($key){
       $data = $this->getAll();
       if($this->type == 0) return null;
       return isset($data[$key]) ? $data[$key] : null;
@@ -78,7 +86,11 @@ namespace ymind\xming{
       $this->setAll($data);
     }
 
-    public function shift(bool $del = true):?mixed{
+    /**
+     * @param bool $del
+     * @return mixed|null
+     */
+    public function shift(bool $del = true){
       if($this->type == 0) return null;
       $data = $this->getAll();
       if($del){
@@ -92,7 +104,11 @@ namespace ymind\xming{
       return null;
     }
 
-    public function pop(bool $del = true):?mixed{
+    /**
+     * @param bool $del
+     * @return mixed|null
+     */
+    public function pop(bool $del = true){
       if($this->type == 0) return null;
       $data = $this->getAll();
       if($del){
