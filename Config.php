@@ -30,6 +30,11 @@ class Config{
       $this->file = $file;
    }
    
+    public function exists($key){
+      $data = $this->getAll();
+      if($this->type == 0) return false;
+      return isset($data[$key]);
+    }
     public function getAll(){
        $str = trim(file_get_contents($this->file));
        return $this->type == 0 ? $str : json_decode($str,true);
